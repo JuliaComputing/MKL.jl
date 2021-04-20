@@ -63,7 +63,11 @@ function insert_MKL_load(base_dir)
     end
 
     # After this the stdlibs get included, so insert MKL to be loaded here
-    start_idx = findfirst(match.(r"Base._track_dependencies\[\] = true", lines) .!= nothing)
+    if VERSION >= v"1.6.0"
+        start_idx = findfirst(match.(r"# Stdlibs sorted in dependency, then alphabetical, order by contrib/print_sorted_stdlibs.jl", lines) .!= nothing)
+    else
+        start_idx = findfirst(match.(r"Base._track_dependencies\[\] = true", lines) .!= nothing)
+    end
 
     splice!(lines, (start_idx + 1):start_idx, MKL_PAYLOAD_LINES)
     write(file, string(join(lines, '\n'), '\n'))
