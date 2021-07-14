@@ -1,6 +1,6 @@
 using MKL
 
-if is_lbt_available()
+if MKL.is_lbt_available()
     exit() # Don't want to build the system image, since we will use LBT
 end
 
