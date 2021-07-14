@@ -1,6 +1,6 @@
 using MKL
 
-if VERSION > MKL.JULIA_VER_NEEDED
+if is_lbt_available()
     exit() # Don't want to build the system image, since we will use LBT
 end
 
