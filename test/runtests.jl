@@ -1,6 +1,5 @@
 using LinearAlgebra
 using MKL
-using MKL_jll
 using Test
 
 if VERSION > MKL.JULIA_VER_NEEDED

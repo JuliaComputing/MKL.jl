@@ -28,8 +28,9 @@ elseif mkl_provider == "system"
         get(ENV, "JULIA_MKL_PATH", nothing),
         "",
     )::String)
-    const libmkl_rt = find_library(["libmkl_rt"], [mkl_path])
-    libmkl_rt == "" && error("Couldn't find libmkl_rt. Maybe set JULIA_MKL_PATH?")
+    libname = string("libmkl_rt", ".", Libdl.dlext)
+    const libmkl_rt = find_library(libname, [mkl_path])
+    libmkl_rt == "" && error("Couldn't find $libname. Maybe try setting JULIA_MKL_PATH?")
 else
     error("Invalid mkl_provider choice $(mkl_provider).")
 end
@@ -44,8 +45,9 @@ function set_mkl_provider(provider)
     @info("New MKL provider set; please restart Julia to see this take effect", provider)
 end
 
-JULIA_VER_NEEDED = v"1.7.0-DEV.641"
-VERSION > JULIA_VER_NEEDED && using LinearAlgebra
+is_lbt_available() = VERSION > v"1.7.0-DEV.641"
+
+is_lbt_available() && using LinearAlgebra
 
 if Base.USE_BLAS64
     const MKLBlasInt = Int64
@@ -83,7 +85,7 @@ function __init__()
     # if MKL_jll.is_available()
     set_threading_layer()
     set_interface_layer()
-    VERSION > JULIA_VER_NEEDED && BLAS.lbt_forward(libmkl_rt, clear=true)
+    is_lbt_available() && BLAS.lbt_forward(libmkl_rt, clear=true)
     # end
 end
 
