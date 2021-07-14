@@ -1,9 +1,11 @@
 using MKL
 
 if MKL.is_lbt_available()
+    @info "Using LBT"
     exit() # Don't want to build the system image, since we will use LBT
 end
 
+@info "Using PackageCompiler"
 using PackageCompiler
 using MKL_jll
 
